@@ -7,7 +7,7 @@ QMOD Version 0.1 does 3 things:
 3️⃣ Solve for optimal configuration
 
 QMOD prototype:
-1. Infrastructure graph modeel
+1. Infrastructure graph model
 2. Prediction engine 
 3. QGAD Anomaly detection 
 4. Multiobjective energy model
