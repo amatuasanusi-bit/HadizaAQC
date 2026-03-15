@@ -1,0 +1,6 @@
+from dwave.system import LeapHybridSampler
+
+sampler = LeapHybridSampler()
+result = sampler.sample(bqm)
+
+print(result.first.sample)
