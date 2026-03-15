@@ -1,6 +1,6 @@
 # HadizaAQC
 
-QMOD Version 0.1 should does 3 things:
+QMOD Version 0.1 does 3 things:
 
 1️⃣ Build infrastructure graph
 2️⃣ Define optimization energy
