@@ -1,0 +1,11 @@
+pip install dwave-ocean-sdk
+
+from dimod import BinaryQuadraticModel
+
+Q = {('x1','x1'):1,
+     ('x2','x2'):1,
+     ('x1','x2'):-2}
+
+bqm = BinaryQuadraticModel.from_qubo(Q)
+
+print(bqm)
