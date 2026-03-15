@@ -1,0 +1,9 @@
+import numpy as np
+
+flows = np.array([100, 95, 92, 300])  # anomaly spike
+
+threshold = np.mean(flows) + 2*np.std(flows)
+
+for i,f in enumerate(flows):
+    if f > threshold:
+        print("Anomaly at node", i)
