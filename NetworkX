@@ -1,0 +1,18 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+# create graph
+G = nx.Graph()
+
+# nodes
+G.add_node("SolarPlant")
+G.add_node("Substation_A")
+G.add_node("City_Load")
+
+# edges (power flow)
+G.add_edge("SolarPlant", "Substation_A", capacity=100)
+G.add_edge("Substation_A", "City_Load", capacity=80)
+
+# draw graph
+nx.draw(G, with_labels=True)
+plt.show()
