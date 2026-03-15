@@ -1,0 +1,25 @@
+qmod/
+│
+├── core/
+│   ├── graph_model.py
+│   ├── energy_model.py
+│   ├── infrastructure_assets.py
+│
+├── intelligence/
+│   ├── prediction_engine.py
+│   ├── qgad_detector.py
+│   ├── risk_resilience.py
+│
+├── optimization/
+│   ├── qubo_builder.py
+│   ├── classical_solver.py
+│   ├── hybrid_solver.py
+│
+├── visualization/
+│   ├── network_plot.py
+│
+├── applications/
+│   ├── power_grid_demo.py
+│
+├── qmod_system.py
+└── main.py
