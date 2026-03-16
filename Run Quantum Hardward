@@ -1,0 +1,4 @@
+pip install qiskit qiskit-optimization qiskit-ibm-runtime
+
+from qiskit_ibm_runtime import QiskitRuntimeService
+QiskitRuntimeService.save_account(channel="ibm_quantum", token="YOUR_API_KEY")
