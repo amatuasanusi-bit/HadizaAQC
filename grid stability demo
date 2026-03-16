@@ -1,0 +1,97 @@
+import numpy as np
+import networkx as nx
+
+from qiskit.primitives import Sampler
+from qiskit.algorithms import QAOA
+from qiskit.algorithms.optimizers import COBYLA
+
+from qiskit_optimization import QuadraticProgram
+from qiskit_optimization.algorithms import MinimumEigenOptimizer
+
+# ---------------------------------
+# STEP 1: Build Grid Graph
+# ---------------------------------
+
+G = nx.Graph()
+
+nodes = [
+"GenA",
+"GenB",
+"Substation",
+"City1",
+"City2"
+]
+
+G.add_nodes_from(nodes)
+
+edges = [
+("GenA","Substation"),
+("GenB","Substation"),
+("Substation","City1"),
+("Substation","City2")
+]
+
+G.add_edges_from(edges)
+
+print("Grid network:")
+print(G.edges())
+
+# ---------------------------------
+# STEP 2: Define Optimization Model
+# ---------------------------------
+
+qp = QuadraticProgram()
+
+qp.binary_var("route_A")
+qp.binary_var("route_B")
+qp.binary_var("line_C1")
+qp.binary_var("line_C2")
+
+# Cost function
+
+linear = {
+"route_A": 2,
+"route_B": 3,
+"line_C1": 1,
+"line_C2": 1
+}
+
+quadratic = {
+("route_A","line_C1"): -2,
+("route_B","line_C2"): -2
+}
+
+qp.minimize(linear=linear, quadratic=quadratic)
+
+# Supply constraint
+
+qp.linear_constraint(
+linear={"route_A":1,"route_B":1},
+sense=">=",
+rhs=1,
+name="power_supply"
+)
+
+# ---------------------------------
+# STEP 3: Quantum Solver
+# ---------------------------------
+
+sampler = Sampler()
+
+optimizer = COBYLA(maxiter=200)
+
+qaoa = QAOA(
+sampler=sampler,
+optimizer=optimizer,
+reps=3
+)
+
+solver = MinimumEigenOptimizer(qaoa)
+
+result = solver.solve(qp)
+
+print("Optimal grid configuration:")
+print(result.x)
+
+print("Optimal cost:")
+print(result.fval)
