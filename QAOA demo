@@ -1,0 +1,95 @@
+# QMOD Quantum Optimization Demo
+# Runs QAOA for small infrastructure optimization
+
+import numpy as np
+from qiskit import Aer
+from qiskit.algorithms import QAOA
+from qiskit.primitives import Sampler
+from qiskit_optimization import QuadraticProgram
+from qiskit_optimization.algorithms import MinimumEigenOptimizer
+from qiskit.algorithms.optimizers import COBYLA
+
+# ---------------------------------------
+# STEP 1: Define Infrastructure Problem
+# ---------------------------------------
+
+# Example grid decision variables
+# x0 = use generator A
+# x1 = use generator B
+# x2 = route through substation
+# x3 = activate backup line
+
+qp = QuadraticProgram()
+
+qp.binary_var("x0")
+qp.binary_var("x1")
+qp.binary_var("x2")
+qp.binary_var("x3")
+
+# Cost function (example infrastructure costs)
+
+linear = {
+"x0": 2,
+"x1": 3,
+"x2": 1,
+"x3": 4
+}
+
+quadratic = {
+("x0","x2"): -2,
+("x1","x2"): -1,
+("x2","x3"): -2
+}
+
+qp.minimize(linear=linear, quadratic=quadratic)
+
+# Constraint example
+qp.linear_constraint(
+linear={"x0":1,"x1":1},
+sense=">=",
+rhs=1,
+name="supply_constraint"
+)
+
+# ---------------------------------------
+# STEP 2: Setup QAOA
+# ---------------------------------------
+
+sampler = Sampler()
+
+optimizer = COBYLA(maxiter=100)
+
+qaoa = QAOA(
+sampler=sampler,
+optimizer=optimizer,
+reps=2
+)
+
+algorithm = MinimumEigenOptimizer(qaoa)
+
+# ---------------------------------------
+# STEP 3: Solve Problem
+# ---------------------------------------
+
+result = algorithm.solve(qp)
+
+print("Optimal solution:")
+print(result.x)
+
+print("Optimal cost:")
+print(result.fval)
+
+# ---------------------------------------
+# STEP 4: Optional Hardware Execution
+# ---------------------------------------
+
+from qiskit_ibm_runtime import QiskitRuntimeService
+
+service = QiskitRuntimeService()
+
+backend = service.least_busy(
+simulator=False,
+operational=True
+)
+
+print("Using backend:", backend)
