@@ -1,0 +1,64 @@
+import numpy as np
+import networkx as nx
+from scipy.linalg import expm
+import matplotlib.pyplot as plt
+
+# ---------------------------------------
+# STEP 1: Create Infrastructure Graph
+# ---------------------------------------
+
+G = nx.Graph()
+
+nodes = ["GenA","GenB","Substation","City1","City2","City3"]
+G.add_nodes_from(nodes)
+
+edges = [
+("GenA","Substation"),
+("GenB","Substation"),
+("Substation","City1"),
+("Substation","City2"),
+("City2","City3")
+]
+
+G.add_edges_from(edges)
+
+# ---------------------------------------
+# STEP 2: Adjacency Matrix
+# ---------------------------------------
+
+A = nx.to_numpy_array(G)
+
+# ---------------------------------------
+# STEP 3: Initial Quantum State
+# ---------------------------------------
+
+n = len(nodes)
+
+psi0 = np.zeros(n)
+psi0[0] = 1   # start walk at generator
+
+# ---------------------------------------
+# STEP 4: Quantum Walk Evolution
+# ---------------------------------------
+
+t = 2
+
+U = expm(-1j*A*t)
+
+psi_t = U @ psi0
+
+probabilities = np.abs(psi_t)**2
+
+print("Quantum walk probabilities:")
+
+for i,node in enumerate(nodes):
+    print(node, probabilities[i])
+
+# ---------------------------------------
+# STEP 5: Visualize
+# ---------------------------------------
+
+plt.bar(nodes, probabilities)
+plt.title("Quantum Walk Node Probabilities")
+plt.ylabel("Probability")
+plt.show()
