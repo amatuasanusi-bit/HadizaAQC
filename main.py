@@ -1,3 +1,17 @@
+from detector.engine import PredictionEngine
+from detector.graph_utils import InfrastructureGraph
+
+def main():
+    # Setup
+    graph = InfrastructureGraph()
+    engine = PredictionEngine()
+    
+    # Execute
+    results = engine.forecast_network(graph)
+    print(f"Results generated: {results}")
+
+
+
 from qmod_system import QMOD
 from visualization.network_plot import draw
 
